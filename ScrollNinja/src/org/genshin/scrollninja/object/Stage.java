@@ -4,19 +4,18 @@ package org.genshin.scrollninja.object;
 
 import java.util.ArrayList;
 
-import org.genshin.scrollninja.BackgroundManager;
-import org.genshin.scrollninja.EffectManager;
-import org.genshin.scrollninja.EnemyManager;
 import org.genshin.scrollninja.GameMain;
-import org.genshin.scrollninja.ItemManager;
-import org.genshin.scrollninja.PlayerManager;
 import org.genshin.scrollninja.ScrollNinja;
-import org.genshin.scrollninja.StageObjectManager;
-import org.genshin.scrollninja.WeaponManager;
 import org.genshin.scrollninja.object.StageDataList.StageData;
+import org.genshin.scrollninja.object.character.ninja.PlayerManager;
+import org.genshin.scrollninja.object.character.ninja.PlayerNinja;
+import org.genshin.scrollninja.object.item.Item;
+import org.genshin.scrollninja.object.weapon.WeaponManager;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 
 public class Stage implements StageBase {
@@ -24,10 +23,12 @@ public class Stage implements StageBase {
 	private Box2DDebugRenderer		renderer;		//
 	private ArrayList<Item>			popItems;		//
 	private ArrayList<Enemy>		popEnemys;		//
-	private ArrayList<Weapon>		popWeapons;
 
 	private int						stageNum;		// ステージナンバー
 	private StageData	 			stageData;		// ステージのデータ
+	
+	private boolean prevInput;
+	private boolean renderDebug = true;
 
 	// コンストラクタ
 	public Stage(int num){
@@ -67,6 +68,21 @@ public class Stage implements StageBase {
 
 		updateCamera();
 		GameMain.playerInfo.update();
+		
+		
+		// TODO 最終的には消すハズ
+		if( Gdx.input.isKeyPressed(Keys.H) )
+		{
+			if(!prevInput)
+			{
+				renderDebug = !renderDebug;
+			}
+			prevInput = true;
+		}
+		else
+		{
+			prevInput = false;
+		}
 	}
 
 	//************************************************************
@@ -94,7 +110,7 @@ public class Stage implements StageBase {
 		GameMain.spriteBatch.end();										// 描画終了
 
 		// TODO リリース前にこの処理をクリア直後に持ってくる
-		renderer.render(GameMain.world, GameMain.camera.combined);
+		if(renderDebug)	renderer.render(GameMain.world, GameMain.camera.combined);
 		GameMain.world.step(Gdx.graphics.getDeltaTime(), 20, 20);
 
 		/**
@@ -108,22 +124,23 @@ public class Stage implements StageBase {
 	// カメラ情報更新
 	//************************************************************
 	public void updateCamera() {
+		Vector2 playerPosition = PlayerManager.GetPlayer(0).getBody().getPosition();
+		
 		// カメラはプレイヤーに追随
-		GameMain.camera.position.set(PlayerManager.GetPlayer(0).body.getPosition().x,
-									 PlayerManager.GetPlayer(0).body.getPosition().y, 0);
+		GameMain.camera.position.set(playerPosition.x, playerPosition.y, 0);
 
 		// カメラの移動制限
 		if (GameMain.camera.position.x <
-				-(BackgroundManager.backgroundList.sprite.get(Background.MAIN).getWidth() * 0.5
+				-(BackgroundManager.backgroundList.sprites.get(Background.MAIN).getWidth() * 0.5
 														- ScrollNinja.window.x * 0.5f) * ScrollNinja.scale)
 			GameMain.camera.position.x =
-				-(BackgroundManager.backgroundList.sprite.get(Background.MAIN).getWidth() * 0.5f
+				-(BackgroundManager.backgroundList.sprites.get(Background.MAIN).getWidth() * 0.5f
 														- ScrollNinja.window.x * 0.5f) * ScrollNinja.scale;
 		if (GameMain.camera.position.x >
-				(BackgroundManager.backgroundList.sprite.get(Background.MAIN).getWidth() * 0.5
+				(BackgroundManager.backgroundList.sprites.get(Background.MAIN).getWidth() * 0.5
 														- ScrollNinja.window.x * 0.5f) * ScrollNinja.scale)
 			GameMain.camera.position.x =
-				(BackgroundManager.backgroundList.sprite.get(Background.MAIN).getWidth() * 0.5f
+				(BackgroundManager.backgroundList.sprites.get(Background.MAIN).getWidth() * 0.5f
 														- ScrollNinja.window.x * 0.5f) * ScrollNinja.scale;
 
 		if (GameMain.camera.position.y < -(stageData.backgroundSize.get(Background.MAIN).y
@@ -158,7 +175,7 @@ public class Stage implements StageBase {
 
 	}
 
-	public Player spawnPlayer(Player player) {
+	public PlayerNinja spawnPlayer(PlayerNinja player) {
 		return player;
 	}
 

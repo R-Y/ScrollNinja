@@ -1,6 +1,5 @@
 package org.genshin.scrollninja.object;
 
-import org.genshin.scrollninja.BackgroundManager;
 import org.genshin.scrollninja.FileOperation;
 import org.genshin.scrollninja.GameMain;
 import org.genshin.scrollninja.Mouse;
@@ -115,14 +114,14 @@ public class StageEditor implements Screen, InputProcessor {
 	private void Move() {
 		GameMain.camera.position.set(position.x, position.y, 0);
 
-		if (GameMain.camera.position.x < -(BackgroundManager.backgroundList.sprite.get(1).getWidth() * 0.5f - ScrollNinja.window.x * 0.5f) * ScrollNinja.scale) {
-			GameMain.camera.position.x = -(BackgroundManager.backgroundList.sprite.get(1).getWidth() * 0.5f - ScrollNinja.window.x * 0.5f) * ScrollNinja.scale;
+		if (GameMain.camera.position.x < -(BackgroundManager.backgroundList.sprites.get(1).getWidth() * 0.5f - ScrollNinja.window.x * 0.5f) * ScrollNinja.scale) {
+			GameMain.camera.position.x = -(BackgroundManager.backgroundList.sprites.get(1).getWidth() * 0.5f - ScrollNinja.window.x * 0.5f) * ScrollNinja.scale;
 		}
 		else if( Gdx.input.isKeyPressed(Keys.A) ) {
 			position.x --;
 		}
-		if (GameMain.camera.position.x > (BackgroundManager.backgroundList.sprite.get(1).getWidth() * 0.5f - ScrollNinja.window.x * 0.5f) * ScrollNinja.scale) {
-			GameMain.camera.position.x = (BackgroundManager.backgroundList.sprite.get(1).getWidth() * 0.5f - ScrollNinja.window.x * 0.5f) * ScrollNinja.scale;
+		if (GameMain.camera.position.x > (BackgroundManager.backgroundList.sprites.get(1).getWidth() * 0.5f - ScrollNinja.window.x * 0.5f) * ScrollNinja.scale) {
+			GameMain.camera.position.x = (BackgroundManager.backgroundList.sprites.get(1).getWidth() * 0.5f - ScrollNinja.window.x * 0.5f) * ScrollNinja.scale;
 		}
 		else if( Gdx.input.isKeyPressed(Keys.D) ) {
 			position.x ++;
