@@ -3,10 +3,8 @@
  */
 package org.genshin.scrollninja.object.character.ninja.controller;
 
-import org.genshin.scrollninja.utils.XMLFactory;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.XmlReader.Element;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * プレイヤーが操作する忍者の操作状態を管理するオブジェクトの基本クラス。
@@ -21,39 +19,25 @@ public abstract class AbstractPlayerNinjaController implements NinjaControllerIn
 	 */
 	public AbstractPlayerNinjaController()
 	{
-		inputHelpers = new InputHelperInterface[InputType.values().length];
-		
-		Element root = XMLFactory.getInstance().get("data/xml/object_param.xml");
-		root = root.getChildByName("Kaginawa");
-		KAGINAWA_RELEASE_TIME = root.getFloat("ReleaseTime");
-		
 		initialize();
 	}
 
 	@Override
 	public final void update()
 	{
-		/** 入力情報を更新する。 */
+		//---- 入力情報を更新する。
 		for(int i = 0;  i < inputHelpers.length;  ++i)
 		{
 			assert inputHelpers[i]!=null : "NinjaControllerは正しく初期化されていません。(InputType=" + InputType.values()[i].toString() + ")";
 			inputHelpers[i].update();
 		}
 		
-		/** 鉤縄を離す入力の判定用タイマー */
-		final float delta = 1.0f/60.0f;
-		if( inputHelpers[InputType.KAGINAWA.ordinal()].isTrigger() )
-		{
-			kaginawaReleaseTimer = 0.0f;
-		}
-		else
-		{
-			kaginawaReleaseTimer += delta;
-		}
+		//---- 忍者の向きを更新する。
+		updateDirection();
 	}
 
 	@Override
-	public final float getMoveLevel()
+	public final float getMovePower()
 	{
 		float result = 0.0f;
 		if(inputHelpers[InputType.LEFT.ordinal()].isPress())	result -= 1.0f;
@@ -62,9 +46,27 @@ public abstract class AbstractPlayerNinjaController implements NinjaControllerIn
 	}
 
 	@Override
+	public final Vector2 getDirection()
+	{
+		return direction;
+	}
+
+	@Override
+	public boolean isMoveStart()
+	{
+		return inputHelpers[InputType.LEFT.ordinal()].isTrigger() || inputHelpers[InputType.RIGHT.ordinal()].isTrigger();
+	}
+
+	@Override
 	public final boolean isDash()
 	{
 		return inputHelpers[InputType.DASH.ordinal()].isPress();
+	}
+
+	@Override
+	public boolean isDashStart()
+	{
+		return inputHelpers[InputType.DASH.ordinal()].isTrigger();
 	}
 
 	@Override
@@ -77,6 +79,12 @@ public abstract class AbstractPlayerNinjaController implements NinjaControllerIn
 	public final boolean isAerialJump()
 	{
 		return inputHelpers[InputType.JUMP.ordinal()].isTrigger();
+	}
+
+	@Override
+	public boolean isLeaveSnapCeiling()
+	{
+		return isKaginawaRelease() || isAerialJump();
 	}
 
 	@Override
@@ -100,19 +108,34 @@ public abstract class AbstractPlayerNinjaController implements NinjaControllerIn
 	@Override
 	public final boolean isKaginawaHang()
 	{
-		return inputHelpers[InputType.KAGINAWA.ordinal()].isPress() && kaginawaReleaseTimer>=KAGINAWA_RELEASE_TIME;
+		return inputHelpers[InputType.KAGINAWA.ordinal()].isPress();
 	}
 
 	@Override
 	public final boolean isKaginawaRelease()
 	{
-		return inputHelpers[InputType.KAGINAWA.ordinal()].isRelease() && kaginawaReleaseTimer<KAGINAWA_RELEASE_TIME;
+		return inputHelpers[InputType.KAGINAWA_RELEASE.ordinal()].isTrigger();
 	}
 
 	/**
 	 * インスタンスを初期化する。
 	 */
 	protected abstract void initialize();
+	
+	/**
+	 * 忍者の向きを計算する。
+	 */
+	protected abstract void updateDirection();
+	
+	/**
+	 * 忍者の向きを設定する。
+	 * @param x		ベクトルのX成分
+	 * @param y		ベクトルのY成分
+	 */
+	protected void setDirection(float x, float y)
+	{
+		direction.set(x, y);
+	}
 	
 	/**
 	 * キーボード入力を登録する。
@@ -149,16 +172,14 @@ public abstract class AbstractPlayerNinjaController implements NinjaControllerIn
 		JUMP,
 		ATTACK,
 		KAGINAWA,
+		KAGINAWA_RELEASE,
 	}
 	
 	/** 入力補助オブジェクト */
-	private InputHelperInterface inputHelpers[];
+	private final InputHelperInterface inputHelpers[] = new InputHelperInterface[InputType.values().length];
 	
-	/** 鉤縄を離す入力の判定用 */
-	private final float KAGINAWA_RELEASE_TIME;
-	
-	/** 鉤縄を離す入力の判定用タイマー */
-	private float kaginawaReleaseTimer;
+	/** 忍者の向き */
+	private final Vector2 direction = new Vector2();
 	
 	
 	

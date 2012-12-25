@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- 衝突関連のパラメータ -->
+<!-- 衝突関連の設定 -->
 <CollisionParam>
 	<!-- 忍者 -->
 	<Ninja>
@@ -13,7 +13,8 @@
 		<!-- 下半身 -->
 		<Foot>
 			<FixtureDef>
-				<Friction>0.0</Friction>
+				<Dencity>1.0</Dencity>
+				<Friction>0.8</Friction>
 			</FixtureDef>
 		</Foot>
 	</Ninja>
@@ -22,7 +23,7 @@
 	<Kaginawa>
 		<FixtureDef>
 			<CircleShape>
-				<Radius>1.0</Radius>
+				<Radius>10.0</Radius>
 			</CircleShape>
 		</FixtureDef>
 	</Kaginawa>
@@ -30,7 +31,8 @@
 	<!-- 地形（ステージの設定ファイルに隔離するべきかも） -->
 	<Terrain>
 		<FixtureDef>
-			<Friction>0.0</Friction>
+			<Dencity>1.0</Dencity>
+			<Friction>0.5</Friction>
 		</FixtureDef>
 	</Terrain>
 	
@@ -48,13 +50,11 @@
 			
 			<!-- 矩形の衝突判定 -->
 			<PolygonShape>
-				<!-- 横幅　省略時：1.0 -->
+				<!-- 矩形の大きさ　省略時：1.0 -->
 				<Width>1.0</Width>
-				<!-- 縦幅　省略時：1.0 -->
 				<Height>1.0</Height>
-				<!-- 中央となるX座標（0.0を指定するとど真ん中）　省略時：0.0 -->
+				<!-- 中央となる座標（0.0を指定するとど真ん中）　省略時：0.0 -->
 				<OriginX>0.0</OriginX>
-				<!-- 中央となるY座標（0.0を指定するとど真ん中）　省略時：0.0 -->
 				<OriginY>0.0</OriginY>
 				<!-- 角度　範囲：[0, 360)　省略時：0.0 -->
 				<Angle>0.0</Angle>
@@ -63,9 +63,8 @@
 			<CircleShape>
 				<!-- 半径　省略時：1.0 -->
 				<Radius>1.0</Radius>
-				<!-- 中央となるX座標（0.0を指定するとど真ん中）　省略時：0.0 -->
+				<!-- 中央となる座標（0.0を指定するとど真ん中）　省略時：0.0 -->
 				<OriginX>0.0</OriginX>
-				<!-- 中央となるY座標（0.0を指定するとど真ん中）　省略時：0.0 -->
 				<OriginY>0.0</OriginY>
 			</CircleShape>
 			<!-- BodyEditorで作成した衝突判定 -->

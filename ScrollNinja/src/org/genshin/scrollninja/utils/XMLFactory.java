@@ -2,13 +2,13 @@ package org.genshin.scrollninja.utils;
 
 import java.io.IOException;
 
-import org.genshin.engine.resource.factory.AbstractResourceFactory;
+import org.genshin.engine.factory.AbstractFlyweightFactory;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
 
-public final class XMLFactory extends AbstractResourceFactory<Element, String>
+public final class XMLFactory extends AbstractFlyweightFactory<Element, String>
 {
 	/**
 	 * コンストラクタ
@@ -28,14 +28,14 @@ public final class XMLFactory extends AbstractResourceFactory<Element, String>
 	}
 	
 	@Override
-	protected Element create(String id)
+	protected Element create(String key)
 	{
-		XmlReader reader = new XmlReader();
+		final XmlReader reader = new XmlReader();
 		Element element = null;
 		
 		try
 		{
-			element = reader.parse( Gdx.files.internal(id) );
+			element = reader.parse( Gdx.files.internal(key) );
 		}
 		catch (IOException e)
 		{
