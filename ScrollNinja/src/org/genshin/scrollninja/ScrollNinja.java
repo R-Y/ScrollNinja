@@ -27,14 +27,14 @@ public class ScrollNinja extends Game
 	{
 		//---- デバッグ文字列の初期化
 		DebugString.initialize(false);
-		
+
 		//---- アイコンを設定する。
 		final Pixmap[] pixmaps = { new Pixmap(Gdx.files.internal("data/textures/scrollninja.png")) };
 		Gdx.graphics.setIcon(pixmaps);
-		
+
 		//---- 画面のクリアカラーを設定する。
 		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		
+
 		//---- 初期スクリーンを設定する。
 		setScreen(new GameMain(this, 0));
 	}
@@ -44,22 +44,22 @@ public class ScrollNinja extends Game
 	{
 		//---- 画面をクリアする
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
+
 		//---- 基本クラスの処理を実行する。
 		super.render();
-		
+
 		//---- デバッグ文字列を描画する。
 		DebugString.render();
 		DebugString.add("Frame Count : " + GlobalParam.INSTANCE.frameCount);
 		DebugString.add("FPS : " + Gdx.graphics.getFramesPerSecond());
-		
+
 		//---- 状態別の処理を実行する。
 		state.invoke(this, Gdx.graphics.getDeltaTime());
-		
+
 		//---- ゲーム内時間をカウントする。
 		GlobalParam.INSTANCE.frameCount++;
 		GlobalParam.INSTANCE.gameTime = Gdx.graphics.getDeltaTime();
-		
+
 		//---- [Esc] 入力でプログラムを終了する。
 		if(Gdx.input.isKeyPressed(Keys.ESCAPE))
 		{
@@ -67,7 +67,7 @@ public class ScrollNinja extends Game
 			return;
 		}
 	}
-	
+
 	/**
 	 * 状態を変更する。
 	 * @param newState	新しい状態
@@ -80,11 +80,11 @@ public class ScrollNinja extends Game
 			state.initialize();
 		}
 	}
-	
+
 	/** ゲームの状態 */
 	private State state = State.MAIN;
-	
-	
+
+
 	/**
 	 * 状態管理
 	 */
@@ -98,7 +98,7 @@ public class ScrollNinja extends Game
 			{
 				prevInput = false;
 			}
-			
+
 			@Override
 			void invoke(ScrollNinja me, float deltaTime)
 			{
@@ -111,30 +111,30 @@ public class ScrollNinja extends Game
 						int newWidth = GlobalParam.INSTANCE.CLIENT_WIDTH;
 						int newHeight = GlobalParam.INSTANCE.CLIENT_HEIGHT;
 						final boolean newFullscreen = !Gdx.graphics.isFullscreen();
-						
+
 						if( newFullscreen )
 						{
 							final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 							newWidth = d.width;
 							newHeight = d.height;
 						}
-						
+
 						Gdx.graphics.setDisplayMode(newWidth, newHeight, newFullscreen);
-						
+
 						final Screen screen = me.getScreen();
 						screen.resize(newWidth, newHeight);
 						screen.pause();
-						
+
 						me.changeState(SWITCH_FULLSCREEN);
 					}
 				}
 				prevInput = input;
 			}
-			
+
 			/** 仮。 */
 			private boolean prevInput;
 		},
-		
+
 		/** フルスクリーンの切り替え状態 */
 		SWITCH_FULLSCREEN
 		{
@@ -143,7 +143,7 @@ public class ScrollNinja extends Game
 			{
 				timer = 0.3f;
 			}
-			
+
 			@Override
 			void invoke(ScrollNinja me, float deltaTime)
 			{
@@ -157,17 +157,17 @@ public class ScrollNinja extends Game
 				me.getScreen().resume();
 				me.changeState(State.MAIN);
 			}
-			
+
 			/** タイマー */
 			float timer;
 		}
 		;
-		
+
 		/**
 		 * 初期化する。
 		 */
 		abstract void initialize();
-		
+
 		/**
 		 * 処理を実行する。
 		 * @param me			自身を示すオブジェクト

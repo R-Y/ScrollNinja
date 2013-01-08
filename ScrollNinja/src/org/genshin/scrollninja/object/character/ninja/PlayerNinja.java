@@ -39,10 +39,10 @@ public class PlayerNinja extends AbstractCharacter {
 	 */
 	public PlayerNinja(World world, Vector2 position, Cursor cursor) {
 		super(world, position);
-		
+
 		// 初期座標設定
 		getBody().setTransform(position, 0.0f);
-		
+
 		// フィールドの初期化
 		controller = new DefaultPlayerNinjaController(this, cursor);
 		kaginawa = new Kaginawa(world, getBody());
@@ -64,20 +64,20 @@ public class PlayerNinja extends AbstractCharacter {
 
 		// 状態に合わせた更新処理
 		state = state.update(this, deltaTime);
-		
+
 		// 鉤縄を更新
 		kaginawa.update(deltaTime);
-		
+
 		//---- 残像を付けてみる。
 		new AfterimageEffect(getRenderObjects(), getPositionX(), getPositionY(), (float)Math.toDegrees(getBody().getAngle()));
-		
+
 		//---- デバッグ文字列
 		DebugString.add("");
 		DebugString.add("Ninja State : " + state.getClass().getSimpleName());
 		DebugString.add("Ninja Position : " + getPositionX() + ", " + getPositionY());
 		DebugString.add("Ninja Velocity : " + getBody().getLinearVelocity().x + ", " + getBody().getLinearVelocity().y + " (" + getBody().getLinearVelocity().len() + ")");
 	}
-	
+
 	@Override
 	public void render()
 	{
@@ -86,7 +86,7 @@ public class PlayerNinja extends AbstractCharacter {
 		final float angle = getBody().getAngle();
 		final Vector2 upDirection = new Vector2(-(float)Math.sin(angle), (float)Math.cos(angle));
 		flip(upDirection.crs(direction) < 0.0f, false);
-		
+
 		//---- 鉤縄を描画する。
 		kaginawa.render();
 
@@ -99,13 +99,13 @@ public class PlayerNinja extends AbstractCharacter {
 	{
 		object.notifyCollision(this, contact);
 	}
-	
+
 	@Override
 	public void notifyCollision(Background obj, Contact contact)
 	{
 		state.collisionTerrain(this, contact);
 	}
-	
+
 	@Override
 	protected void initializeSprite()
 	{
@@ -127,16 +127,16 @@ public class PlayerNinja extends AbstractCharacter {
 	protected void initializeFixture()
 	{
 		final float worldScale = GlobalParam.INSTANCE.WORLD_SCALE;
-		
+
 		// 下半身
 		FixtureDef ffd = NinjaParam.INSTANCE.FOOT_FIXTURE_DEF_LOADER.createFixtureDef();
 		CircleShape circleShape = new CircleShape();
 		circleShape.setRadius(15.0f * worldScale);
 		ffd.shape = circleShape;
-		
+
 		createFixture(ffd);
 		circleShape.dispose();
-		
+
 		// 上半身
 		FixtureDef bfd = NinjaParam.INSTANCE.BODY_FIXTURE_DEF_LOADER.createFixtureDef();
 		PolygonShape polygonShape = new PolygonShape();
@@ -146,7 +146,7 @@ public class PlayerNinja extends AbstractCharacter {
 		createFixture(bfd);
 		polygonShape.dispose();
 	}
-	
+
 	/**
 	 * 移動する方向を更新する。
 	 */
@@ -175,7 +175,7 @@ public class PlayerNinja extends AbstractCharacter {
 	{
 		getFootRenderObject().setAnimation(name);
 	}
-	
+
 	/**
 	 * アニメーションを設定する。
 	 * @param name		アニメーションの名前
@@ -185,7 +185,7 @@ public class PlayerNinja extends AbstractCharacter {
 		setBodyAnimation(name);
 		setFootAnimation(name);
 	}
-	
+
 	/**
 	 * 上半身の描画オブジェクトを取得する。
 	 * @return		上半身の描画オブジェクト
@@ -194,7 +194,7 @@ public class PlayerNinja extends AbstractCharacter {
 	{
 		return getRenderObject(1);
 	}
-	
+
 	/**
 	 * 下半身の描画オブジェクトを取得する。
 	 * @return		下半身の描画オブジェクト
@@ -203,7 +203,7 @@ public class PlayerNinja extends AbstractCharacter {
 	{
 		return getRenderObject(0);
 	}
-	
+
 	/**
 	 * 上半身の衝突オブジェクトを取得する。
 	 * @return		上半身の衝突オブジェクト
@@ -212,7 +212,7 @@ public class PlayerNinja extends AbstractCharacter {
 	{
 		return getFixture(1);
 	}
-	
+
 	/**
 	 * 下半身の衝突オブジェクトを取得する。
 	 * @return		下半身の衝突オブジェクト
@@ -221,7 +221,7 @@ public class PlayerNinja extends AbstractCharacter {
 	{
 		return getFixture(0);
 	}
-	
+
 	/**
 	 * 地面に立っているか調べる。
 	 * @return		地面に立っている場合はtrue
@@ -230,38 +230,38 @@ public class PlayerNinja extends AbstractCharacter {
 	{
 		return groundedTimer > 0;
 	}
-	
+
 	/** 忍者の操作を管理するオブジェクト */
 	NinjaControllerInterface	controller;
-	
+
 	/** 鉤縄オブジェクト */
 	Kaginawa	kaginawa;
-	
+
 	/** 空中でジャンプできる残り回数 */
 	int	restAerialJumpCount;
-	
+
 	/** 正面方向を表すベクトル */
 	final Vector2 frontDirection = new Vector2();
-	
+
 	/** ジャンプ方向を表すベクトル */
 	final Vector2 jumpDirection = new Vector2(Vector2.Y);
-	
+
 	/** 世界の重力の強さ */
 	final float worldGravity;
-	
+
 	/** 地面との接触フラグ */
 	int groundedTimer;
-	
+
 	/** 移動する方向（天井に張り付いた状態から自然に移動する用） */
 	float moveDirection = 0.0f;
-	
+
 	/** 摩擦のデフォルト値 */
 	final float defaultFriction;
-	
+
 	/** 忍者の状態を管理するオブジェクト */
 	private StateInterface		state;
-	
-	
+
+
 	// TODO まだ触ってないソースとの互換性を保つためだけの実装。いずれ消し去る。
 	public int GetChakra(){ return 1; }
 	public int GetMaxChakra(){ return 1; }

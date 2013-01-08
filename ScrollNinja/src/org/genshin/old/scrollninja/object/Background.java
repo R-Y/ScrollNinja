@@ -47,7 +47,7 @@ public class Background extends AbstractCollisionObject {
 	// 変数宣言
 	private int				stageNum;		// ステージ番号
 	private StageData 		stageData;		// ステージのデータ
-	
+
 	private final Vector2 lightAnimVelocity = new Vector2(-0.0005f, -0.0005f);
 
 	/**
@@ -100,7 +100,7 @@ public class Background extends AbstractCollisionObject {
 				sprites.add(sprite);
 			}
 		}
-		
+
 		// 透明度（仮）
 		Sprite sprite = sprites.get(6);
 		sprite.setColor(1.0f, 1.0f, 1.0f, 0.25f);
@@ -135,7 +135,7 @@ public class Background extends AbstractCollisionObject {
 
 		final float cameraXRatio = (camera.position.x - camera.viewportWidth * 0.5f) / (stageSize.x - camera.viewportWidth);
 		final float cameraYRatio = (camera.position.y - camera.viewportHeight * 0.5f) / (stageSize.y - camera.viewportHeight);
-		
+
 		for(int i = 0;  i < layerCount;  ++i)
 		{
 			final float layerScale = stageData.layerData.get(i).scale;
@@ -147,7 +147,7 @@ public class Background extends AbstractCollisionObject {
 				cameraYRatio * stageSize.y * (1.0f - layerScale) + bgPosition.y * layerScale
 			);
 		}
-		
+
 		final Sprite sprite = sprites.get(6);
 		sprite.setU(sprite.getU() + lightAnimVelocity.x);
 		sprite.setU2(sprite.getU2() + lightAnimVelocity.x);

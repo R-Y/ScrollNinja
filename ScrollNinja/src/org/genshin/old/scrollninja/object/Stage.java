@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.utils.Logger;
 
 public class Stage implements StageBase {
 
@@ -34,18 +35,18 @@ public class Stage implements StageBase {
 
 	private int						stageNum;		// ステージナンバー
 	private StageData	 			stageData;		// ステージのデータ
-	
+
 	private Cursor cursor;
 	private CameraTranslater cameraTranslater;
 
 	private final UpdatableManager updatableManager = new UpdatableManager();
 	private final RenderableManager renderableManager = new RenderableManager();
-	
+
 	private boolean prevInput;
 	private boolean renderDebug = false;
-	
+
 	private Sprite screenEdgeSprite = null;
-	private final Matrix4 tmpMatrix = new Matrix4(); 
+	private final Matrix4 tmpMatrix = new Matrix4();
 
 //	private Sprite screenNoiseSprite = null;
 	private Sprite logoSprite = null;
@@ -61,9 +62,9 @@ public class Stage implements StageBase {
 		stageData = StageDataList.lead(stageNum);
 
 		renderer = new Box2DDebugRenderer();
-		
+
 		cursor = new Cursor(GameMain.camera, 2.0f * GlobalParam.INSTANCE.WORLD_SCALE);
-		
+
 		// 超　仮
 		{
 			final float worldScale = GlobalParam.INSTANCE.WORLD_SCALE;
@@ -86,8 +87,12 @@ public class Stage implements StageBase {
 	public void Update(float deltaTime) {
 		DebugString.add("Update Count : " + updatableManager.size());
 		DebugString.add("Render Count : " + renderableManager.size());
-		
+
 		cursor.update(deltaTime);
+		Logger log = new Logger("logger");
+		//log.error("syuriken posX  " + cursor.getPositionX());
+		//log.error("syuriken posY  " + cursor.getPositionY());
+		//log.error("player pos  " + PlayerManager.GetPlayer(0).position);
 		CollisionDetector.HitTest();			// これ最初にやってほしいかも？
 		EnemyManager.Update(deltaTime);
 		WeaponManager.Update(deltaTime);
@@ -112,8 +117,8 @@ public class Stage implements StageBase {
 //		}
 
 //		GameMain.playerInfo.update();
-		
-		
+
+
 		// TODO 最終的には消すハズ
 		if( Gdx.input.isKeyPressed(Keys.NUM_0) )
 		{
@@ -127,7 +132,7 @@ public class Stage implements StageBase {
 		{
 			prevInput = false;
 		}
-		
+
 		if( Gdx.input.isKeyPressed(Keys.F1) )
 		{
 			if(!prevInputF1)
@@ -150,24 +155,25 @@ public class Stage implements StageBase {
 		GameMain.spriteBatch.setProjectionMatrix(GameMain.camera.combined);		// プロジェクション行列のセット
 		GameMain.spriteBatch.begin();											// 描画開始
 		{
+			// XXX 画像が大きすぎて表示できていない、のだと思う
 			BackgroundManager.backgroundList.Draw(0);
-			BackgroundManager.backgroundList.Draw(1);
-			BackgroundManager.backgroundList.Draw(2);
-			BackgroundManager.backgroundList.Draw(3);
-			BackgroundManager.backgroundList.Draw(4);
+			//BackgroundManager.backgroundList.Draw(1);
+			//BackgroundManager.backgroundList.Draw(2);
+			//BackgroundManager.backgroundList.Draw(3);
+			//BackgroundManager.backgroundList.Draw(4);
 			StageObjectManager.Draw();
 			renderableManager.render();
 			PlayerManager.Draw();
 			EnemyManager.Draw();
 			EffectManager.Draw();
 			ItemManager.Draw();
-			BackgroundManager.backgroundList.Draw(5);
-			BackgroundManager.backgroundList.Draw(6);
-			BackgroundManager.backgroundList.Draw(7);
-			BackgroundManager.backgroundList.Draw(8);
+			//BackgroundManager.backgroundList.Draw(5);
+			//BackgroundManager.backgroundList.Draw(6);
+			//BackgroundManager.backgroundList.Draw(7);
+			//BackgroundManager.backgroundList.Draw(8);
 //			GameMain.playerInfo.Draw();
 			cursor.render();
-			
+
 			GameMain.spriteBatch.setProjectionMatrix(tmpMatrix);
 			screenEdgeSprite.draw(GameMain.spriteBatch);
 		}
@@ -236,7 +242,7 @@ public class Stage implements StageBase {
 		{
 			EnemyManager.CreateEnemy(enemy.type, enemy.position);
 		}
-		
+
 		cameraTranslater = new CameraTranslater(GameMain.camera);
 		cameraTranslater.addTargetObject(cursor);
 		cameraTranslater.addTargetObject(PlayerManager.GetPlayer(0));
